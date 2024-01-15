@@ -56,7 +56,24 @@ export class SaveAllService {
   
   
   
+  getBlByUserIdAndFiltrageTrue<T>(
+    userId: number,
+    page: number,
+    limit: number,
+    dateBl?: Date,
+    matriculeFiscale?: string,
+    reference?: string
+  ): Observable<PaginatedResponse<T>> {
+    const params = new HttpParams()
+      .set('dateBl', dateBl instanceof Date ? dateBl.toISOString() : '')
+      .set('matriculeFiscale', matriculeFiscale || '')
+      .set('reference', reference || '');
   
+    return this.http.get<PaginatedResponse<T>>(
+      `${environment.backendHost}/bl/${userId}/getAllBlByUserFilterTrue/${page}/${limit}`,
+      { params }
+    );
+  }
 
 
 

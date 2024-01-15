@@ -54,12 +54,13 @@ export class ListvalidComponent {
 
   ngOnInit(): void {
     this.users = JSON.parse(localStorage.getItem('currentUser') as string);
+
     this.GetAll();
 
   }
 
   GetAll(): void {
-    this.service.getBlByUserIdAndFiltrage<CreateBlDto>(
+    this.service.getBlByUserIdAndFiltrageTrue<CreateBlDto>(
       this.users.user.id,
       1,
       this.totalItems,
@@ -69,15 +70,11 @@ export class ListvalidComponent {
     )
     .subscribe((paginatedResponse) => {
       this.blList = paginatedResponse.items;
-      this.filterVerifiedFalse();
       this.applyFilter();
     });
   }
   
-  filterVerifiedFalse(): void {
-    this.blList = this.blList.filter(item => item.verified === true);
-    this.applyFilter();
-  }
+ 
  
 
  
