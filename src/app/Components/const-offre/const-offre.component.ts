@@ -37,7 +37,7 @@ export class ConstOffreComponent implements OnInit {
 
     this.modalForm = this.formBuilder.group({
       id: [],
-      matriculeFiscale: ['', [ Validators.pattern(/^(\d{7}[a-zA-Z\/]+[a-zA-Z0-9\/]*)$/)]],
+      matriculeFiscale: [''],
       CIN: [''],
       Mob: [''],
       colisRetour: [''],
@@ -91,35 +91,55 @@ export class ConstOffreComponent implements OnInit {
   
   
   
-
   updateMatriculeFiscale() {
     const blId = this.selectedBl;
-    const matriculeFiscaleValue = this.modalForm.value;
-    if (blId && matriculeFiscaleValue && this.modalForm.get('matriculeFiscale')!.invalid) {
-      this.errorMessage = 'Matricule Fiscale does not match the specified format. Please correct it.';
-      return; 
-    }
-   else if (blId && matriculeFiscaleValue && this.modalForm.get('CIN')!.invalid) {
-      this.errorMessage = 'CIN does not match the specified format. Please correct it.';
-      return; 
-    }
-    if (blId && matriculeFiscaleValue) {
-      this.service
-        .updateOffre(blId, matriculeFiscaleValue).subscribe(
-          (response) => {
-            console.log('Updated successfully:', response);
-            this.GetAll(); 
-            this.closeModal('myModal');
-            this.modalForm.reset();
-            this.errorMessage = '';
-          },
-          (error) => {
-            console.error('Update failed:', error);
-            this.errorMessage = 'Failed to update Matricule Fiscale. Please try again.';
-          }
-        );
+    const matriculeFiscaleControl = this.modalForm.get('matriculeFiscale');
+  
+    if (blId && matriculeFiscaleControl) {
+      if (matriculeFiscaleControl.invalid) {
+        this.errorMessage = 'Matricule Fiscale does not match the specified format. Please correct it.';
+        return;
+      } else if (this.modalForm.get('CIN')!.invalid) {
+        this.errorMessage = 'CIN does not match the specified format. Please correct it.';
+        return;
+      }
+  
+      if (matriculeFiscaleControl.value) {
+        matriculeFiscaleControl.setValidators([Validators.pattern(/^(\d{7}[a-zA-Z\/]+[a-zA-Z0-9\/]*)$/)]);
+        this.errorMessage = 'Matricule Fiscale does not match the specified format. Please correct it.';
+      } else {
+        matriculeFiscaleControl.clearValidators();
+      }
+  
+      // Update validity
+      matriculeFiscaleControl.updateValueAndValidity();
+  
+      if (matriculeFiscaleControl.errors) { 
+        this.errorMessage = 'Matricule Fiscale does not match the specified format. Please correct it.';
+        return;
+      }
+  
+      const updatedValue = { ...this.modalForm.value, matriculeFiscale: matriculeFiscaleControl.value };
+      this.service.updateOffre(blId, updatedValue).subscribe(
+        (response) => {
+          console.log('Updated successfully:', response);
+          this.GetAll();
+          this.closeModal('myModal');
+          this.modalForm.get('matriculeFiscale')?.enable();
+          this.modalForm.get('CIN')?.enable();
+          this.modalForm.reset();
+  
+          this.errorMessage = '';
+        },
+        (error) => {
+          console.error('Update failed:', error);
+          this.errorMessage = 'Failed to update Matricule Fiscale. Please try again.';
+        }
+      );
     }
   }
+  
+  
   
   
   
