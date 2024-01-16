@@ -11,15 +11,16 @@
             {{ successMessagereg }}
           </div>
      
-        
+          <input type="text"  formControlName="name"placeholder="name" />
         <input type="text" formControlName="matriculeFiscale" placeholder="matriculeFiscale" />
+
         <input type="text" formControlName="email" placeholder="Email" autocomplete="username" />
 
         <div *ngIf="errorMessagereg" class="alert alert-danger">
   {{ errorMessagereg }}
 </div>
 <input type="password" formControlName="password" placeholder="Password" autocomplete="current-password" />
-<input type="text"  formControlName="name"placeholder="name" />
+
         <button type="submit">Signup</button>
       </form>
     </div>
@@ -45,7 +46,7 @@
     <div class="intro-control signin-intro">
       <div class="intro-control__inner">
         <h2>Welcome</h2>
-       
+        <button id="signup-btn">No account yet? Signup.</button>
       </div>
     </div>
     <div class="intro-control signup-intro">
@@ -56,3 +57,4 @@
     </div>
   </div>
 </div>
+
